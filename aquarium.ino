@@ -20,6 +20,7 @@ AlarmId id;
 #define BRIGHTNESS 255
 #define LED_TYPE WS2811
 #define COLOR_ORDER GRB
+#include "GradientPalettes.h"
 
 CRGB leds[NUM_LEDS];
 
@@ -54,9 +55,18 @@ void setup() {
   Alarm.alarmRepeat(20, 0, 0, startsunset);
   Alarm.alarmRepeat(20, 30, 0, startmoonglow);
   Alarm.alarmRepeat(22, 0, 0, startlightsoff);
-  
+
+
 
 }
+
+CRGBPalette16 currentsunrisePalette;
+
+static uint8_t sunrisepalettenumber = 1;
+
+CRGBPalette16 currentsunsetPalette;
+
+static uint8_t sunsetpalettenumber = 1;
 
 boolean sunriseGo = false;
 boolean sunsetGo = false;
@@ -64,6 +74,7 @@ boolean daylightGo = false;
 boolean purplelightGo = false;
 boolean moonglowGo = false;
 boolean lightsoffGo = false;
+
 
 void loop() {
 
@@ -82,15 +93,16 @@ void loop() {
   else if (sunsetGo == true) {
     sunset();
     FastLED.show();
-  } 
+  }
   else if (moonglowGo == true) {
     moonglow();
     FastLED.show();
-  } 
+  }
   else if (lightsoffGo == true) {
     lightsoff();
     FastLED.show();
-  }     
+  }
+
   digitalClockDisplay();
 
   Alarm.delay(1);
@@ -103,6 +115,14 @@ void startsunrise() {
   purplelightGo = false;
   moonglowGo = false;
   lightsoffGo = false;
+
+  if (sunrisepalettenumber < 5 ) {
+    sunrisepalettenumber++;
+  }
+  else if (sunrisepalettenumber == 5 ) {
+    sunrisepalettenumber = 1;
+  }
+
 }
 
 void startsunset() {
@@ -112,6 +132,13 @@ void startsunset() {
   purplelightGo = false;
   moonglowGo = false;
   lightsoffGo = false;
+
+  if (sunsetpalettenumber < 5 ) {
+    sunsetpalettenumber++;
+  }
+  else if (sunsetpalettenumber == 5 ) {
+    sunsetpalettenumber = 1;
+  }
 }
 
 void startdaylight() {
@@ -221,21 +248,21 @@ void sunset() {
 }
 
 void daylight() {
-  fill_solid(leds, NUM_LEDS, CRGB(255,255,255));
+  fill_solid(leds, NUM_LEDS, CRGB(255, 255, 255));
 }
 
 void purplelight() {
-  fill_solid(leds, NUM_LEDS, CRGB(102,0,102));
+  fill_solid(leds, NUM_LEDS, CRGB(102, 0, 102));
 }
 
 void moonglow() {
-  leds[0].setRGB(255,255,255);
-  leds[1].setRGB(255,255,255);
-  leds[2].setRGB(255,255,255);
+  leds[0].setRGB(255, 255, 255);
+  leds[1].setRGB(255, 255, 255);
+  leds[2].setRGB(255, 255, 255);
 }
 
 void lightsoff() {
- fadeToBlackBy(leds, NUM_LEDS, 64 );
+  fadeToBlackBy(leds, NUM_LEDS, 64 );
 }
 
 void digitalClockDisplay() {
@@ -243,4 +270,23 @@ void digitalClockDisplay() {
   Serial.println(ctime(&tnow));
 
 }
+
+void changesunrisePalette () {
+  if ( sunrisepalettenumber == 1) {
+    currentsunrisePalette = HeatColors_p;
+  }
+  if ( sunrisepalettenumber == 2) {
+    currentsunrisePalette = sky_02_gp;
+  }
+}
+
+void changesunsetPalette () {
+  if ( sunsetpalettenumber == 1) {
+    currentsunsetPalette = HeatColors_p;
+  }
+  if ( sunsetpalettenumber == 2) {
+    currentsunsetPalette = sky_02_gp;
+  }
+}
+
 
