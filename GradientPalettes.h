@@ -38,4 +38,32 @@ DEFINE_GRADIENT_PALETTE( sky_22_gp ) {
   178,  48,156,233,
   255,   3, 59,162};
 
+// Gradient palette "Sunset_Real_gp", originally from
+// http://soliton.vm.bytemark.co.uk/pub/cpt-city/nd/atmospheric/tn/Sunset_Real.png.index.html
+// converted for FastLED with gammas (2.6, 2.2, 2.5)
+// Size: 28 bytes of program space.
+
+DEFINE_GRADIENT_PALETTE( Sunset_Real_gp ) {
+    0, 120,  0,  0,
+   22, 179, 22,  0,
+   51, 255,104,  0,
+   85, 167, 22, 18,
+  135, 100,  0,103,
+  198,  16,  0,130,
+  255,   0,  0,160};
+
+
+// Gradient palette "Magenta_Evening_gp", originally from
+// http://soliton.vm.bytemark.co.uk/pub/cpt-city/nd/atmospheric/tn/Magenta_Evening.png.index.html
+// converted for FastLED with gammas (2.6, 2.2, 2.5)
+// Size: 28 bytes of program space.
+
+DEFINE_GRADIENT_PALETTE( Magenta_Evening_gp ) {
+    0,  71, 27, 39,
+   31, 130, 11, 51,
+   63, 213,  2, 64,
+   70, 232,  1, 66,
+   76, 252,  1, 69,
+  108, 123,  2, 51,
+  255,  46,  9, 35};  
 
