@@ -27,12 +27,16 @@ CRGB leds[NUM_LEDS];
 //CRGBPalette16 currentsunrisePalette;
 //CRGBPalette16 currentsunsetPalette;
 
+//CRGBPalette16 currentPalette;
+//TBlendType    currentBlending;
+
 void setup() {
   Serial.begin(115200);
   Serial.println("Booting");
 
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS);
   FastLED.setBrightness(BRIGHTNESS);
+
 
   WiFi.mode(WIFI_STA);
   WiFi.begin(YOUR_WIFI_SSID, YOUR_WIFI_PASSWD);
@@ -52,11 +56,12 @@ void setup() {
   Serial.print("Clock after Wifi: ");
 
   // Set alarms
-  Alarm.alarmRepeat(19, 48, 0, startsunrise);
-  Alarm.alarmRepeat(20, 56, 0, startdaylight);
-  Alarm.alarmRepeat(20, 35, 0, startsunset);
-  Alarm.alarmRepeat(20, 57, 0, startmoonglow);
-  Alarm.alarmRepeat(20, 58, 0, startlightsoff);
+  Alarm.alarmRepeat(20, 59, 0, startsunrise);
+  Alarm.alarmRepeat(21, 00, 0, startdaylight);
+  Alarm.alarmRepeat(21, 01, 0, startsunset);
+  Alarm.alarmRepeat(21, 03, 0, startmoonglow);
+  Alarm.alarmRepeat(21, 05, 0, startlightsoff);
+  Alarm.alarmRepeat(21, 07, 0, startsunrise);
 
 }
 
@@ -73,7 +78,7 @@ boolean moonglowGo = false;
 boolean lightsoffGo = false;
 
 
-// Forward declarations of an array of cpt-city gradient palettes, and 
+// Forward declarations of an array of cpt-city gradient palettes, and
 // a count of how many there are.  The actual color palette definitions
 // are at the bottom of this file.
 extern const TProgmemRGBGradientPalettePtr gGradientPalettes[];
@@ -85,10 +90,10 @@ uint8_t gCurrentPaletteNumber = 0;
 CRGBPalette16 gCurrentPalette( CRGB::Black);
 CRGBPalette16 gTargetPalette( gGradientPalettes[0] );
 
+
+
 void loop() {
-    gCurrentPaletteNumber = addmod8( gCurrentPaletteNumber, 1, gGradientPaletteCount);
-    gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
-    
+
   if (sunriseGo == true) {
     sunrise();
     FastLED.show();
@@ -127,14 +132,17 @@ void startsunrise() {
   moonglowGo = false;
   lightsoffGo = false;
 
-//  if (sunrisepalettenumber < 5 ) {
-//    sunrisepalettenumber++;
-//  }
-//  else if (sunrisepalettenumber == 5 ) {
-//    sunrisepalettenumber = 1;
-//  }
+  gCurrentPaletteNumber = addmod8( gCurrentPaletteNumber, 1, gGradientPaletteCount);
+  gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
 
-//    changesunrisePalette;
+  //  if (sunrisepalettenumber < 5 ) {
+  //    sunrisepalettenumber++;
+  //  }
+  //  else if (sunrisepalettenumber == 5 ) {
+  //    sunrisepalettenumber = 1;
+  //  }
+
+  //    changesunrisePalette;
 
 }
 
@@ -147,12 +155,12 @@ void startsunset() {
   lightsoffGo = false;
 
 
-//  if (sunsetpalettenumber < 5 ) {
-//    sunsetpalettenumber++;
-//  }
-//  else if (sunsetpalettenumber == 5 ) {
-//    sunsetpalettenumber = 1;
-//  }
+  //  if (sunsetpalettenumber < 5 ) {
+  //    sunsetpalettenumber++;
+  //  }
+  //  else if (sunsetpalettenumber == 5 ) {
+  //    sunsetpalettenumber = 1;
+  //  }
 
 }
 
@@ -199,8 +207,10 @@ void testalarm() {
 
 void sunrise() {
 
+  CRGBPalette16 gCurrentPalette;
+
   // total sunrise length, in minutes
-  static const uint8_t sunriseLength = 5;
+  static const uint8_t sunriseLength = 1;
 
   // how often (in seconds) should the heat color increase?
   // for the default of 30 minutes, this should be about every 7 seconds
@@ -224,8 +234,6 @@ void sunrise() {
   fill_solid(leds + 19, 10, color);
   Serial.println("Sunrise Happening on Palette-");
   Serial.println(gCurrentPaletteNumber);
-  Serial.println(color);
-  Serial.println(middlecolor);
 
   // slowly increase the heat
   EVERY_N_MILLISECONDS(interval ) {
@@ -245,7 +253,7 @@ void sunrise() {
 void sunset() {
 
   // total sunrise length, in minutes
-  static const uint8_t sunsetLength = 5;
+  static const uint8_t sunsetLength = 1;
 
   // how often (in seconds) should the heat color increase?
   // for the default of 30 minutes, this should be about every 7 seconds
@@ -327,6 +335,8 @@ DEFINE_GRADIENT_PALETTE( sky_02_gp ) {
   255,   1,  4, 47
 };
 
+//CRGBPalette16 gCurrentPalette = sky_02_gp; 
+
 // Gradient palette "sky_12_gp", originally from
 // http://soliton.vm.bytemark.co.uk/pub/cpt-city/rafi/tn/sky-12.png.index.html
 // converted for FastLED with gammas (2.6, 2.2, 2.5)
@@ -334,23 +344,25 @@ DEFINE_GRADIENT_PALETTE( sky_02_gp ) {
 // This one starts in the pinks and goes through violets to black
 
 DEFINE_GRADIENT_PALETTE( sky_12_gp ) {
-    0, 206, 78, 44,
-   68, 167, 57,155,
+  0, 206, 78, 44,
+  68, 167, 57, 155,
   165,  12,  1, 37,
-  255,   1,  1,  9};
+  255,   1,  1,  9
+};
 
 
 // Gradient palette "sky_22_gp", originally from
 // http://soliton.vm.bytemark.co.uk/pub/cpt-city/rafi/tn/sky-22.png.index.html
 // converted for FastLED with gammas (2.6, 2.2, 2.5)
 // Size: 16 bytes of program space.
-// A very blue one ideal for a cool sunrise ending in white. 
+// A very blue one ideal for a cool sunrise ending in white.
 
 DEFINE_GRADIENT_PALETTE( sky_22_gp ) {
-    0, 224,244,255,
-   87,  83,203,255,
-  178,  48,156,233,
-  255,   3, 59,162};
+  0, 224, 244, 255,
+  87,  83, 203, 255,
+  178,  48, 156, 233,
+  255,   3, 59, 162
+};
 
 // Gradient palette "Sunset_Real_gp", originally from
 // http://soliton.vm.bytemark.co.uk/pub/cpt-city/nd/atmospheric/tn/Sunset_Real.png.index.html
@@ -358,13 +370,14 @@ DEFINE_GRADIENT_PALETTE( sky_22_gp ) {
 // Size: 28 bytes of program space.
 
 DEFINE_GRADIENT_PALETTE( Sunset_Real_gp ) {
-    0, 120,  0,  0,
-   22, 179, 22,  0,
-   51, 255,104,  0,
-   85, 167, 22, 18,
-  135, 100,  0,103,
-  198,  16,  0,130,
-  255,   0,  0,160};
+  0, 120,  0,  0,
+  22, 179, 22,  0,
+  51, 255, 104,  0,
+  85, 167, 22, 18,
+  135, 100,  0, 103,
+  198,  16,  0, 130,
+  255,   0,  0, 160
+};
 
 
 // Gradient palette "Magenta_Evening_gp", originally from
@@ -373,19 +386,20 @@ DEFINE_GRADIENT_PALETTE( Sunset_Real_gp ) {
 // Size: 28 bytes of program space.
 
 DEFINE_GRADIENT_PALETTE( Magenta_Evening_gp ) {
-    0,  71, 27, 39,
-   31, 130, 11, 51,
-   63, 213,  2, 64,
-   70, 232,  1, 66,
-   76, 252,  1, 69,
+  0,  71, 27, 39,
+  31, 130, 11, 51,
+  63, 213,  2, 64,
+  70, 232,  1, 66,
+  76, 252,  1, 69,
   108, 123,  2, 51,
-  255,  46,  9, 35};  
-  
+  255,  46,  9, 35
+};
+
 // Single array of defined cpt-city color palettes.
 // This will let us programmatically choose one based on
-// a number, rather than having to activate each explicitly 
+// a number, rather than having to activate each explicitly
 // by name every time.
-// Since it is const, this array could also be moved 
+// Since it is const, this array could also be moved
 // into PROGMEM to save SRAM, but for simplicity of illustration
 // we'll keep it in a regular SRAM array.
 //
@@ -396,9 +410,10 @@ const TProgmemRGBGradientPalettePtr gGradientPalettes[] = {
   sky_22_gp,
   sky_02_gp,
   sky_12_gp,
-  Magenta_Evening_gp };
+  Magenta_Evening_gp
+};
 
 
 // Count of how many cpt-city gradients are defined:
-const uint8_t gGradientPaletteCount = 
+const uint8_t gGradientPaletteCount =
   sizeof( gGradientPalettes) / sizeof( TProgmemRGBGradientPalettePtr );
