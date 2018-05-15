@@ -67,3 +67,15 @@ DEFINE_GRADIENT_PALETTE( Magenta_Evening_gp ) {
   108, 123,  2, 51,
   255,  46,  9, 35};  
 
+// Gradient palette "sky_04_gp", originally from
+// http://soliton.vm.bytemark.co.uk/pub/cpt-city/rafi/tn/sky-04.png.index.html
+// converted for FastLED with gammas (2.6, 2.2, 2.5)
+// Size: 16 bytes of program space.
+
+DEFINE_GRADIENT_PALETTE( sky_04_gp ) {
+    0, 255,189,  3,
+   76, 110, 19,  1,
+  151,  27,  5,  1,
+  255,   1,  1,  1};
+  
+
