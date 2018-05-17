@@ -14,6 +14,7 @@ AlarmId id;
 
 // For LEDs
 #define FASTLED_RGBW
+#define FASTLED_ALLOW_INTERRUPTS 0
 #include <FastLED.h>
 #define DATA_PIN 5
 #define NUM_LEDS 45
