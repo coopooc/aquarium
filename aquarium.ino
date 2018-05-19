@@ -72,11 +72,12 @@ void setup() {
   gCurrentPalette = gGradientPalettes[1];
 
   // Set alarms
-  Alarm.alarmRepeat(19, 36, 0, startsunrise);
-  Alarm.alarmRepeat(19, 37, 0, startdaylight);
-  Alarm.alarmRepeat(19, 38, 0, startsunset);
-  Alarm.alarmRepeat(19, 32, 0, startmoonglow);
-  Alarm.alarmRepeat(19, 27, 0, startlightsoff);
+  Alarm.alarmRepeat(06, 20, 0, startsunrise);
+  Alarm.alarmRepeat(07, 30, 0, startpurplelight);
+  Alarm.alarmRepeat(15, 00, 0, startdaylight);
+  Alarm.alarmRepeat(19, 45, 0, startsunset);
+  Alarm.alarmRepeat(20, 15, 0, startmoonglow);
+  Alarm.alarmRepeat(22, 00, 0, startlightsoff);
 
 }
 
@@ -120,10 +121,10 @@ void loop() {
     daylight();
     FastLED.show();
   }
-  //  else if (purplelightGo == true) {
-  //    purplelight();
-  //    FastLED.show();
-  //  }
+    else if (purplelightGo == true) {
+      purplelight();
+      FastLED.show();
+    }
   else if (sunsetGo == true) {
     sunset(leds, NUM_LEDS, gTargetPalette);
     FastLED.show();
@@ -137,27 +138,21 @@ void loop() {
     FastLED.show();
   }
 
-  digitalClockDisplay();
-//  Serial.println("Target Palette");
-//  Serial.println(gTargetPalette);
-//  Serial.println("Current Palette");
-//  Serial.println(gCurrentPalette);
-  Serial.println("Current Palette Number");
-  Serial.println(gCurrentPaletteNumber);
-//  Serial.println("Palette");
-//  Serial.println(palette);
-  Serial.println("SunriseGo");
-  Serial.println(sunriseGo);
-  Serial.println("SunsetGo");
-  Serial.println(sunsetGo);
-  Serial.println("DaylightGo");
-  Serial.println(daylightGo);
-  Serial.println("PurplelightGo");
-  Serial.println(purplelightGo);
-  Serial.println("moonglow");
-  Serial.println(moonglowGo);
-  Serial.println("LightsOffGo");
-  Serial.println(lightsoffGo);
+//  digitalClockDisplay();
+//  Serial.println("Current Palette Number");
+//  Serial.println(gCurrentPaletteNumber);
+//  Serial.println("SunriseGo");
+//  Serial.println(sunriseGo);
+//  Serial.println("SunsetGo");
+//  Serial.println(sunsetGo);
+//  Serial.println("DaylightGo");
+//  Serial.println(daylightGo);
+//  Serial.println("PurplelightGo");
+//  Serial.println(purplelightGo);
+//  Serial.println("moonglow");
+//  Serial.println(moonglowGo);
+//  Serial.println("LightsOffGo");
+//  Serial.println(lightsoffGo);
 
   Alarm.delay(10);
 }
@@ -195,14 +190,6 @@ void startsunset() {
   gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
   gCurrentPaletteNumber = addmod8( gCurrentPaletteNumber, 1, gGradientPaletteCount);
 
-
-
-//  if (gCurrentPaletteNumber < 6 ) {
-//    gCurrentPaletteNumber++;
-//  }
-//  else if (gCurrentPaletteNumber == '5' ) {
-//    gCurrentPaletteNumber = 1;
-//  }
 
 }
 
@@ -253,7 +240,7 @@ void sunrise( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette ) {
   //  gCurrentPalette = gGradientPalettes[ gCurrentPaletteNumber ];
 
   // total sunrise length, in minutes
-  static const uint8_t sunriseLength = 1;
+  static const uint8_t sunriseLength = 30;
 
   // how often (in seconds) should the heat color increase?
   // for the default of 30 minutes, this should be about every 7 seconds
@@ -275,7 +262,6 @@ void sunrise( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette ) {
   fill_solid(leds, 10, color);
   fill_solid(leds + 10, 9, middlecolor);
   fill_solid(leds + 19, 10, color);
-  Serial.println("Sunrise Happening on Palette-");
 
 
   // slowly increase the heat
@@ -296,7 +282,7 @@ void sunrise( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette ) {
 void sunset( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette ) {
 
   // total sunrise length, in minutes
-  static const uint8_t sunsetLength = 1;
+  static const uint8_t sunsetLength = 30;
 
   // how often (in seconds) should the heat color increase?
   // for the default of 30 minutes, this should be about every 7 seconds
