@@ -10,14 +10,15 @@
 AlarmId id;
 
 #define SLEEP_TIME  10*60*1000 // milliseconds
-#define FASTLED_ESP8266_NODEMCU_PIN_ORDER
+//#define FASTLED_ESP8266_NODEMCU_PIN_ORDER
 
 // For LEDs
 #define FASTLED_RGBW
 #define FASTLED_ALLOW_INTERRUPTS 0
+#define FASTLED_ESP8266_DMA
 #include <FastLED.h>
-#define DATA_PIN 5
-#define NUM_LEDS 45
+#define DATA_PIN 3
+#define NUM_LEDS 72
 #define BRIGHTNESS 255
 #define LED_TYPE WS2811
 #define COLOR_ORDER GRB
@@ -28,12 +29,27 @@ CRGB leds[NUM_LEDS];
 CRGBPalette16 gPal;
 
 const TProgmemRGBGradientPalettePtr gGradientPalettes[] = {
-  Sunset_Real_gp,
-  sky_22_gp,
   sky_02_gp,
+  sky_03_gp,
+  sky_04_gp,
+  sky_05_gp,
+  sky_09_gp,
+  sky_10_gp,
+  sky_11_gp,
   sky_12_gp,
+  sky_21_gp,
+  sky_22_gp,
+  sky_25_gp,
+  sky_26_gp,
+  sky_33_gp,
+  sky_34_gp,
+  sky_39_gp,
   Magenta_Evening_gp,
-  sky_04_gp
+  Another_Sunset_gp,
+  Night_Stormy_gp,
+  SummerSunset_gp,
+  Sunset_Real_gp,
+  Sunset_Wow_gp
 };
 
 CRGBPalette16 gCurrentPalette( CRGB::Black);
@@ -73,12 +89,12 @@ void setup() {
   gCurrentPalette = gGradientPalettes[1];
 
   // Set alarms
-  Alarm.alarmRepeat(06, 20, 0, startsunrise);
-  Alarm.alarmRepeat(07, 30, 0, startpurplelight);
-  Alarm.alarmRepeat(15, 00, 0, startdaylight);
+  Alarm.alarmRepeat(6, 15, 0, startsunrise);
+  Alarm.alarmRepeat(7, 30, 0, startpurplelight);
+  Alarm.alarmRepeat(17, 00, 0, startdaylight);
   Alarm.alarmRepeat(19, 45, 0, startsunset);
-  Alarm.alarmRepeat(20, 15, 0, startmoonglow);
-  Alarm.alarmRepeat(22, 00, 0, startlightsoff);
+  Alarm.alarmRepeat(20, 30, 0, startmoonglow);
+  Alarm.alarmRepeat(22, 30, 0, startlightsoff);
 
 }
 
@@ -122,10 +138,10 @@ void loop() {
     daylight();
     FastLED.show();
   }
-    else if (purplelightGo == true) {
-      purplelight();
-      FastLED.show();
-    }
+  else if (purplelightGo == true) {
+    purplelight();
+    FastLED.show();
+  }
   else if (sunsetGo == true) {
     sunset(leds, NUM_LEDS, gTargetPalette);
     FastLED.show();
@@ -139,21 +155,21 @@ void loop() {
     FastLED.show();
   }
 
-//  digitalClockDisplay();
-//  Serial.println("Current Palette Number");
-//  Serial.println(gCurrentPaletteNumber);
-//  Serial.println("SunriseGo");
-//  Serial.println(sunriseGo);
-//  Serial.println("SunsetGo");
-//  Serial.println(sunsetGo);
-//  Serial.println("DaylightGo");
-//  Serial.println(daylightGo);
-//  Serial.println("PurplelightGo");
-//  Serial.println(purplelightGo);
-//  Serial.println("moonglow");
-//  Serial.println(moonglowGo);
-//  Serial.println("LightsOffGo");
-//  Serial.println(lightsoffGo);
+  //  digitalClockDisplay();
+  //  Serial.println("Current Palette Number");
+  //  Serial.println(gCurrentPaletteNumber);
+  //  Serial.println("SunriseGo");
+  //  Serial.println(sunriseGo);
+  //  Serial.println("SunsetGo");
+  //  Serial.println(sunsetGo);
+  //  Serial.println("DaylightGo");
+  //  Serial.println(daylightGo);
+  //  Serial.println("PurplelightGo");
+  //  Serial.println(purplelightGo);
+  //  Serial.println("moonglow");
+  //  Serial.println(moonglowGo);
+  //  Serial.println("LightsOffGo");
+  //  Serial.println(lightsoffGo);
 
   Alarm.delay(10);
 }
@@ -171,12 +187,12 @@ void startsunrise() {
 
 
 
-//  if (gCurrentPaletteNumber < 6 ) {
-//    gCurrentPaletteNumber++;
-//  }
-//  else if (gCurrentPaletteNumber == '5' ) {
-//    gCurrentPaletteNumber = 1;
-//  }
+  //  if (gCurrentPaletteNumber < 6 ) {
+  //    gCurrentPaletteNumber++;
+  //  }
+  //  else if (gCurrentPaletteNumber == '5' ) {
+  //    gCurrentPaletteNumber = 1;
+  //  }
 
 }
 
@@ -260,9 +276,11 @@ void sunrise( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette ) {
   CRGB middlecolor = ColorFromPalette(palette, middlesunrisecolorIndex);
 
   // fill the entire strip with the current color
-  fill_solid(leds, 10, color);
-  fill_solid(leds + 10, 9, middlecolor);
-  fill_solid(leds + 19, 10, color);
+  fill_solid(leds, 13, color);
+  fill_solid(leds + 13, 10, middlecolor);
+  fill_solid(leds + 23, 26, color);
+  fill_solid(leds + 49, 10, middlecolor);
+  fill_solid(leds + 59, 13, color);
 
 
   // slowly increase the heat
@@ -291,8 +309,8 @@ void sunset( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette ) {
   static const float intervalA = ((float)(sunsetLength * 60) / 256) * 1000;
 
   // current gradient palette color index
-  static uint8_t sunsetcolorIndex = 255; // start out at 0
-  static uint8_t middlesunsetcolorIndex = 240; // start out at 0
+  static uint8_t sunsetcolorIndex = 0; // start out at 0
+  static uint8_t middlesunsetcolorIndex = 15; // start out at 0
 
   // HeatColors_p is a gradient palette built in to FastLED
   // that fades from black to red, orange, yellow, white
@@ -301,9 +319,11 @@ void sunset( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette ) {
   CRGB middlecolor = ColorFromPalette(palette, middlesunsetcolorIndex);
 
   // fill the entire strip with the current color
-  fill_solid(leds, 10, color);
-  fill_solid(leds + 10, 9, middlecolor);
-  fill_solid(leds + 19, 10, color);
+  fill_solid(leds, 13, color);
+  fill_solid(leds + 13, 10, middlecolor);
+  fill_solid(leds + 23, 26, color);
+  fill_solid(leds + 49, 10, middlecolor);
+  fill_solid(leds + 59, 13, color);
 
   // slowly increase the heat
   EVERY_N_MILLISECONDS(intervalA ) {
@@ -329,12 +349,13 @@ void purplelight() {
 }
 
 void moonglow() {
-  fadeToBlackBy(leds + 3, NUM_LEDS - 4, 64 );
-  fill_solid(leds, 3, CRGB(102, 0, 102));
+  fadeToBlackBy(leds, 36, 1 );
+  fadeToBlackBy(leds + 39, 33, 1 );
+  fill_solid(leds + 36, 3, CRGB(102, 0, 102));
 }
 
 void lightsoff() {
-  fadeToBlackBy(leds, NUM_LEDS, 64 );
+  fadeToBlackBy(leds, NUM_LEDS, 1 );
 }
 
 void digitalClockDisplay() {
