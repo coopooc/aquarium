@@ -89,12 +89,12 @@ void setup() {
   gCurrentPalette = gGradientPalettes[1];
 
   // Set alarms
-  Alarm.alarmRepeat(6, 15, 0, startsunrise);
-  Alarm.alarmRepeat(7, 30, 0, startpurplelight);
-  Alarm.alarmRepeat(17, 00, 0, startdaylight);
-  Alarm.alarmRepeat(19, 45, 0, startsunset);
-  Alarm.alarmRepeat(20, 30, 0, startmoonglow);
-  Alarm.alarmRepeat(22, 30, 0, startlightsoff);
+  Alarm.alarmRepeat(20, 15, 0, startsunrise);
+  Alarm.alarmRepeat(20, 22, 0, startpurplelight);
+  Alarm.alarmRepeat(20, 24, 0, startdaylight);
+  Alarm.alarmRepeat(20, 25, 0, startsunset);
+  Alarm.alarmRepeat(20, 45, 0, startmoonglow);
+  Alarm.alarmRepeat(20, 48, 0, startlightsoff);
 
 }
 
@@ -131,7 +131,7 @@ uint8_t gCurrentPaletteNumber = 1;
 void loop() {
 
   if (sunriseGo == true) {
-    sunrise(leds, NUM_LEDS, gTargetPalette);
+    sunrise(leds, NUM_LEDS, gCurrentPalette);
     FastLED.show();
   }
   else if (daylightGo == true) {
@@ -143,7 +143,7 @@ void loop() {
     FastLED.show();
   }
   else if (sunsetGo == true) {
-    sunset(leds, NUM_LEDS, gTargetPalette);
+    sunset(leds, NUM_LEDS, gCurrentPalette);
     FastLED.show();
   }
   else if (moonglowGo == true) {
@@ -155,21 +155,21 @@ void loop() {
     FastLED.show();
   }
 
-  //  digitalClockDisplay();
+  digitalClockDisplay();
   //  Serial.println("Current Palette Number");
   //  Serial.println(gCurrentPaletteNumber);
-  //  Serial.println("SunriseGo");
-  //  Serial.println(sunriseGo);
-  //  Serial.println("SunsetGo");
-  //  Serial.println(sunsetGo);
-  //  Serial.println("DaylightGo");
-  //  Serial.println(daylightGo);
-  //  Serial.println("PurplelightGo");
-  //  Serial.println(purplelightGo);
-  //  Serial.println("moonglow");
-  //  Serial.println(moonglowGo);
-  //  Serial.println("LightsOffGo");
-  //  Serial.println(lightsoffGo);
+  Serial.println("SunriseGo");
+  Serial.println(sunriseGo);
+  Serial.println("SunsetGo");
+  Serial.println(sunsetGo);
+  Serial.println("DaylightGo");
+  Serial.println(daylightGo);
+  Serial.println("PurplelightGo");
+  Serial.println(purplelightGo);
+  Serial.println("moonglow");
+  Serial.println(moonglowGo);
+  Serial.println("LightsOffGo");
+  Serial.println(lightsoffGo);
 
   Alarm.delay(10);
 }
@@ -182,9 +182,11 @@ void startsunrise() {
   moonglowGo = false;
   lightsoffGo = false;
 
-  gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
   gCurrentPaletteNumber = addmod8( gCurrentPaletteNumber, 1, gGradientPaletteCount);
+  gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
 
+  Serial.println("SunrisegCurrentPaletteNumber");
+  Serial.println(gCurrentPaletteNumber);
 
 
   //  if (gCurrentPaletteNumber < 6 ) {
@@ -204,8 +206,11 @@ void startsunset() {
   moonglowGo = false;
   lightsoffGo = false;
 
-  gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
   gCurrentPaletteNumber = addmod8( gCurrentPaletteNumber, 1, gGradientPaletteCount);
+  gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
+  Serial.println("SunsetgCurrentPaletteNumber");
+  Serial.println(gCurrentPaletteNumber);
+
 
 
 }
@@ -257,7 +262,7 @@ void sunrise( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette ) {
   //  gCurrentPalette = gGradientPalettes[ gCurrentPaletteNumber ];
 
   // total sunrise length, in minutes
-  static const uint8_t sunriseLength = 30;
+  static const uint8_t sunriseLength = 20;
 
   // how often (in seconds) should the heat color increase?
   // for the default of 30 minutes, this should be about every 7 seconds
@@ -301,7 +306,7 @@ void sunrise( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette ) {
 void sunset( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette ) {
 
   // total sunrise length, in minutes
-  static const uint8_t sunsetLength = 30;
+  static const uint8_t sunsetLength = 20;
 
   // how often (in seconds) should the heat color increase?
   // for the default of 30 minutes, this should be about every 7 seconds
@@ -341,11 +346,11 @@ void sunset( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette ) {
 }
 
 void daylight() {
-  fill_solid(leds, NUM_LEDS, CRGB(255, 255, 255));
+  fill_solid(leds, NUM_LEDS, CRGB(245, 245, 255));
 }
 
 void purplelight() {
-  fill_solid(leds, NUM_LEDS, CRGB(102, 0, 102));
+  fill_solid(leds, NUM_LEDS, CRGB(255, 0, 255));
 }
 
 void moonglow() {
