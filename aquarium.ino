@@ -52,7 +52,7 @@ const TProgmemRGBGradientPalettePtr gGradientPalettes[] = {
   Sunset_Wow_gp
 };
 
-CRGBPalette16 gCurrentPalette( CRGB::Black);
+//CRGBPalette16 gCurrentPalette( CRGB::Black);
 CRGBPalette16 gTargetPalette( gGradientPalettes[0] );
 
 //CRGBPalette16 currentsunrisePalette;
@@ -86,15 +86,15 @@ void setup() {
   }
   Serial.print("Clock after Wifi: ");
 
-  gCurrentPalette = gGradientPalettes[1];
+//  gCurrentPalette = gGradientPalettes[1];
 
   // Set alarms
-  Alarm.alarmRepeat(19, 27, 0, startsunrise);
-  Alarm.alarmRepeat(19, 28, 0, startsunrise);
-  Alarm.alarmRepeat(19, 29, 0, startsunrise);
-  Alarm.alarmRepeat(19, 31, 0, startsunrise);
-  Alarm.alarmRepeat(19, 32, 0, startsunrise);
-  Alarm.alarmRepeat(19, 33, 0, startsunrise);
+  Alarm.alarmRepeat(19, 44, 0, startsunrise);
+  Alarm.alarmRepeat(19, 45, 0, startsunrise);
+  Alarm.alarmRepeat(19, 46, 0, startsunrise);
+  Alarm.alarmRepeat(19, 47, 0, startsunrise);
+  Alarm.alarmRepeat(19, 48, 0, startsunrise);
+  Alarm.alarmRepeat(19, 49, 0, startsunrise);
   
 //  Alarm.alarmRepeat(19, 21, 0, startpurplelight);
 //  Alarm.alarmRepeat(20, 34, 0, startdaylight);
@@ -123,7 +123,7 @@ boolean lightsoffGo = false;
 // a count of how many there are.  The actual color palette definitions
 // are at the bottom of this file.
 //extern const TProgmemRGBGradientPalettePtr gGradientPalettes[];
-//extern const uint8_t gGradientPaletteCount;
+extern const uint8_t gGradientPaletteCount;
 //
 //const TProgmemRGBGradientPalettePtr gGradientPalettes[];
 //const uint8_t gGradientPaletteCount;
@@ -265,7 +265,7 @@ void testalarm() {
   Serial.println("Testing testing 123...");
 }
 
-void sunrise( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette ) {
+void sunrise( CRGB* ledarray, uint16_t numleds, const CRGBPalette16& palette ) {
 
   //CRGBPalette16 gCurrentPalette;
   //  gCurrentPalette = gGradientPalettes[ gCurrentPaletteNumber ];
