@@ -26,7 +26,7 @@ AlarmId id;
 
 CRGB leds[NUM_LEDS];
 
-CRGBPalette16 gPal;
+//CRGBPalette16 gPal;
 
 const TProgmemRGBGradientPalettePtr gGradientPalettes[] = {
   sky_02_gp,
@@ -89,12 +89,20 @@ void setup() {
   gCurrentPalette = gGradientPalettes[1];
 
   // Set alarms
-  Alarm.alarmRepeat(20, 15, 0, startsunrise);
-  Alarm.alarmRepeat(20, 22, 0, startpurplelight);
-  Alarm.alarmRepeat(20, 24, 0, startdaylight);
-  Alarm.alarmRepeat(20, 25, 0, startsunset);
-  Alarm.alarmRepeat(20, 45, 0, startmoonglow);
-  Alarm.alarmRepeat(20, 48, 0, startlightsoff);
+  Alarm.alarmRepeat(19, 27, 0, startsunrise);
+  Alarm.alarmRepeat(19, 28, 0, startsunrise);
+  Alarm.alarmRepeat(19, 29, 0, startsunrise);
+  Alarm.alarmRepeat(19, 31, 0, startsunrise);
+  Alarm.alarmRepeat(19, 32, 0, startsunrise);
+  Alarm.alarmRepeat(19, 33, 0, startsunrise);
+  
+//  Alarm.alarmRepeat(19, 21, 0, startpurplelight);
+//  Alarm.alarmRepeat(20, 34, 0, startdaylight);
+//  Alarm.alarmRepeat(19, 25, 0, startsunset);
+//  Alarm.alarmRepeat(21, 36, 0, startmoonglow);
+//  Alarm.alarmRepeat(19, 27, 0, startlightsoff);
+//Alarm.timerRepeat(10, startsunrise);
+ 
 
 }
 
@@ -114,8 +122,8 @@ boolean lightsoffGo = false;
 // Forward declarations of an array of cpt-city gradient palettes, and
 // a count of how many there are.  The actual color palette definitions
 // are at the bottom of this file.
-extern const TProgmemRGBGradientPalettePtr gGradientPalettes[];
-extern const uint8_t gGradientPaletteCount;
+//extern const TProgmemRGBGradientPalettePtr gGradientPalettes[];
+//extern const uint8_t gGradientPaletteCount;
 //
 //const TProgmemRGBGradientPalettePtr gGradientPalettes[];
 //const uint8_t gGradientPaletteCount;
@@ -131,7 +139,7 @@ uint8_t gCurrentPaletteNumber = 1;
 void loop() {
 
   if (sunriseGo == true) {
-    sunrise(leds, NUM_LEDS, gCurrentPalette);
+    sunrise(leds, NUM_LEDS, gTargetPalette);
     FastLED.show();
   }
   else if (daylightGo == true) {
@@ -143,7 +151,7 @@ void loop() {
     FastLED.show();
   }
   else if (sunsetGo == true) {
-    sunset(leds, NUM_LEDS, gCurrentPalette);
+    sunset(leds, NUM_LEDS, gTargetPalette);
     FastLED.show();
   }
   else if (moonglowGo == true) {
@@ -155,21 +163,21 @@ void loop() {
     FastLED.show();
   }
 
-  digitalClockDisplay();
+    digitalClockDisplay();
   //  Serial.println("Current Palette Number");
   //  Serial.println(gCurrentPaletteNumber);
-  Serial.println("SunriseGo");
-  Serial.println(sunriseGo);
-  Serial.println("SunsetGo");
-  Serial.println(sunsetGo);
-  Serial.println("DaylightGo");
-  Serial.println(daylightGo);
-  Serial.println("PurplelightGo");
-  Serial.println(purplelightGo);
-  Serial.println("moonglow");
-  Serial.println(moonglowGo);
-  Serial.println("LightsOffGo");
-  Serial.println(lightsoffGo);
+    Serial.println("SunriseGo");
+    Serial.println(sunriseGo);
+    Serial.println("SunsetGo");
+    Serial.println(sunsetGo);
+    Serial.println("DaylightGo");
+    Serial.println(daylightGo);
+    Serial.println("PurplelightGo");
+    Serial.println(purplelightGo);
+    Serial.println("moonglow");
+    Serial.println(moonglowGo);
+    Serial.println("LightsOffGo");
+    Serial.println(lightsoffGo);
 
   Alarm.delay(10);
 }
@@ -182,11 +190,12 @@ void startsunrise() {
   moonglowGo = false;
   lightsoffGo = false;
 
-  gCurrentPaletteNumber = addmod8( gCurrentPaletteNumber, 1, gGradientPaletteCount);
-  gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
+   gCurrentPaletteNumber = addmod8( gCurrentPaletteNumber, 1, gGradientPaletteCount);
+   gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
+    
+   Serial.println("SunrisegCurrentPaletteNumber");
+   Serial.println(gCurrentPaletteNumber);
 
-  Serial.println("SunrisegCurrentPaletteNumber");
-  Serial.println(gCurrentPaletteNumber);
 
 
   //  if (gCurrentPaletteNumber < 6 ) {
@@ -206,11 +215,11 @@ void startsunset() {
   moonglowGo = false;
   lightsoffGo = false;
 
-  gCurrentPaletteNumber = addmod8( gCurrentPaletteNumber, 1, gGradientPaletteCount);
-  gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
-  Serial.println("SunsetgCurrentPaletteNumber");
-  Serial.println(gCurrentPaletteNumber);
-
+   gCurrentPaletteNumber = addmod8( gCurrentPaletteNumber, 1, gGradientPaletteCount);
+   gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
+    
+   Serial.println("SunsetgCurrentPaletteNumber");
+   Serial.println(gCurrentPaletteNumber);
 
 
 }
@@ -262,7 +271,7 @@ void sunrise( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette ) {
   //  gCurrentPalette = gGradientPalettes[ gCurrentPaletteNumber ];
 
   // total sunrise length, in minutes
-  static const uint8_t sunriseLength = 20;
+  static const uint8_t sunriseLength = 1;
 
   // how often (in seconds) should the heat color increase?
   // for the default of 30 minutes, this should be about every 7 seconds
@@ -346,7 +355,7 @@ void sunset( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette ) {
 }
 
 void daylight() {
-  fill_solid(leds, NUM_LEDS, CRGB(245, 245, 255));
+  fill_solid(leds, NUM_LEDS, CRGB(235, 235, 255));
 }
 
 void purplelight() {
