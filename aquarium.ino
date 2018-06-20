@@ -59,12 +59,12 @@ void setup() {
 
 
   // Set alarms
-  Alarm.alarmRepeat(19, 23, 0, startsunrise);
-  Alarm.alarmRepeat(19, 24, 0, startsunrise);
-  Alarm.alarmRepeat(19, 25, 0, startsunrise);
-  Alarm.alarmRepeat(19, 26, 0, startsunrise);
-  Alarm.alarmRepeat(19, 27, 0, startsunrise);
-  Alarm.alarmRepeat(19, 28, 0, startsunrise);
+  Alarm.alarmRepeat(19, 51, 0, startsunrise);
+  Alarm.alarmRepeat(19, 52, 0, startsunrise);
+  Alarm.alarmRepeat(19, 53, 0, startsunrise);
+  Alarm.alarmRepeat(19, 54, 0, startsunrise);
+  Alarm.alarmRepeat(19, 55, 0, startsunrise);
+  Alarm.alarmRepeat(19, 56, 0, startsunrise);
 
   //  Alarm.alarmRepeat(19, 21, 0, startpurplelight);
   //  Alarm.alarmRepeat(20, 34, 0, startdaylight);
@@ -122,6 +122,7 @@ uint8_t gCurrentPaletteNumber = 3;
 void loop() {
 
   if (sunriseGo == true) {
+    gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
     sunrise(leds, NUM_LEDS);
     FastLED.show();
   }
@@ -176,7 +177,7 @@ void startsunrise() {
   lightsoffGo = false;
 
   gCurrentPaletteNumber = addmod8( gCurrentPaletteNumber, 1, gGradientPaletteCount);
-  gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
+//  gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
 
 
   Serial.println("SunrisegCurrentPaletteNumber");
