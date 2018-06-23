@@ -64,14 +64,14 @@ void setup() {
 
 
   // Set alarms
-  Alarm.alarmRepeat(20, 19, 0, startsunrise);
-  Alarm.alarmRepeat(20, 21, 0, startlightsoff);
-  Alarm.alarmRepeat(20, 22, 0, startsunrise);
-  Alarm.alarmRepeat(20, 23, 0, startlightsoff);
-  Alarm.alarmRepeat(20, 24, 0, startsunrise);
-  Alarm.alarmRepeat(20, 25, 0, startlightsoff);
+  Alarm.alarmRepeat(20, 4, 0, startsunrise);
+  Alarm.alarmRepeat(20, 5, 0, startlightsoff);
+  Alarm.alarmRepeat(20, 6, 0, startsunrise);
+  Alarm.alarmRepeat(20, 7, 0, startlightsoff);
+  Alarm.alarmRepeat(20, 8, 0, startsunrise);
+  Alarm.alarmRepeat(20, 9, 0, startlightsoff);
 
-//  Alarm.alarmRepeat(19, 33, 0, startsunrise);
+
   //  Alarm.alarmRepeat(19, 21, 0, startpurplelight);
   //  Alarm.alarmRepeat(20, 34, 0, startdaylight);
   //  Alarm.alarmRepeat(19, 25, 0, startsunset);
