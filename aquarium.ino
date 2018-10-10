@@ -1,5 +1,7 @@
 
-#include <ESP8266TimeAlarms.h>
+
+#include <TimeLib.h>
+#include <TimeAlarms.h>
 #include "WifiConfig.h"
 #include <ESP8266WiFi.h>
 
@@ -31,10 +33,10 @@ CRGBPalette16 gTargetPalette;
 
 TBlendType currentBlending;
 
-uint8_t sunrisecolorIndex = 255; // start out at 0
-uint8_t middlesunrisecolorIndex = 240; // start out at 0
+uint8_t sunrisecolorIndex = 240; // start out at 0
+uint8_t middlesunrisecolorIndex = 230; // start out at 0
 
-static uint8_t sunsetcolorIndex = 0; // start out at 0
+static uint8_t sunsetcolorIndex = 5; // start out at 0
 static uint8_t middlesunsetcolorIndex = 15; // start out at 0
 
 void setup() {
@@ -52,7 +54,7 @@ void setup() {
   //Europe/Stockholm": "CET-1CEST,M3.5.0,M10.5.0/3"
   //Get JSON of Olson to TZ string using this code https://github.com/pgurenko/tzinfo
   setenv("TZ", "CST6CDT,M3.2.0,M11.1.0", 1);
-  tzset();
+//  tzset();
   Serial.print("Clock before sync: ");
   digitalClockDisplay();
 
@@ -64,19 +66,15 @@ void setup() {
 
 
   // Set alarms
-  Alarm.alarmRepeat(20, 4, 0, startsunrise);
-  Alarm.alarmRepeat(20, 5, 0, startlightsoff);
-  Alarm.alarmRepeat(20, 6, 0, startsunrise);
-  Alarm.alarmRepeat(20, 7, 0, startlightsoff);
-  Alarm.alarmRepeat(20, 8, 0, startsunrise);
-  Alarm.alarmRepeat(20, 9, 0, startlightsoff);
 
 
-  //  Alarm.alarmRepeat(19, 21, 0, startpurplelight);
-  //  Alarm.alarmRepeat(20, 34, 0, startdaylight);
-  //  Alarm.alarmRepeat(19, 25, 0, startsunset);
-  //  Alarm.alarmRepeat(21, 36, 0, startmoonglow);
-  //  Alarm.alarmRepeat(19, 27, 0, startlightsoff);
+
+  Alarm.alarmRepeat(6, 46, 0, startsunrise);
+  Alarm.alarmRepeat(8, 21, 0, startpurplelight);
+  Alarm.alarmRepeat(14, 34, 0, startdaylight);
+  Alarm.alarmRepeat(20, 5, 0, startsunset);
+  Alarm.alarmRepeat(20, 41, 0, startmoonglow);
+  Alarm.alarmRepeat(22, 5, 0, startlightsoff);
 
 
   // Forward declarations of an array of cpt-city gradient palettes, and
@@ -184,8 +182,8 @@ void startsunrise() {
   gCurrentPaletteNumber = addmod8( gCurrentPaletteNumber, 1, gGradientPaletteCount);
   //  gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
 
-  sunrisecolorIndex = 255;
-  middlesunrisecolorIndex = 240;
+  sunrisecolorIndex = 240;
+  middlesunrisecolorIndex = 230;
 
   Serial.println("SunrisegCurrentPaletteNumber");
   Serial.println(gCurrentPaletteNumber);
@@ -372,10 +370,25 @@ void lightsoff() {
   fadeToBlackBy(leds, NUM_LEDS, 1 );
 }
 
-void digitalClockDisplay() {
-  time_t tnow = time(nullptr);
-  Serial.println(ctime(&tnow));
+//void digitalClockDisplay() {
+//  time_t tnow = time(nullptr);
+//  Serial.println(ctime(&tnow));
+//
+//}
 
+void digitalClockDisplay() {
+  // digital clock display of the time
+  Serial.print(hour());
+  printDigits(minute());
+  printDigits(second());
+  Serial.println();
+}
+
+void printDigits(int digits) {
+  Serial.print(":");
+  if (digits < 10)
+    Serial.print('0');
+  Serial.print(digits);
 }
 
 // Gradient palette "sky_02_gp", originally from
