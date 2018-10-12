@@ -250,16 +250,8 @@ void loop() {
     //  gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
 
     sunrisecolorIndex = 240;
-    middlesunrisecolorIndex = 230;
+    middlesunrisecolorIndex = 235;
 
-
-
-    //  if (gCurrentPaletteNumber < 6 ) {
-    //    gCurrentPaletteNumber++;
-    //  }
-    //  else if (gCurrentPaletteNumber == '5' ) {
-    //    gCurrentPaletteNumber = 1;
-    //  }
 
   }
 
@@ -329,12 +321,12 @@ void loop() {
     nblendPaletteTowardPalette(gCurrentPalette, gTargetPalette, maxChanges);
 
     // total sunrise length, in minutes
-    static const uint8_t sunriseLength = 20;
+    static const uint8_t sunriseLength = 15;
 
     // how often (in seconds) should the heat color increase?
     // for the default of 30 minutes, this should be about every 7 seconds
     // 7 seconds x 256 gradient steps = 1,792 seconds = ~30 minutes
-    static const float interval = ((float)(sunriseLength * 60) / 255) * 1000;
+    static const float interval = ((float)(sunriseLength * 60) / 240) * 1000;
 
     // current gradient palette color index
     //  static uint8_t sunrisecolorIndex = 255; // start out at 0
@@ -376,7 +368,7 @@ void loop() {
     nblendPaletteTowardPalette(gCurrentPalette, gTargetPalette, maxChanges);
 
     // total sunrise length, in minutes
-    static const uint8_t sunsetLength = 2;
+    static const uint8_t sunsetLength = 15;
 
     // how often (in seconds) should the heat color increase?
     // for the default of 30 minutes, this should be about every 7 seconds
@@ -416,7 +408,7 @@ void loop() {
   }
 
   void daylight() {
-    fill_solid(leds, NUM_LEDS, CRGB(220, 220, 255));
+    fill_solid(leds, NUM_LEDS, CRGB(210, 210, 255));
   }
 
   void purplelight() {
@@ -537,8 +529,9 @@ void loop() {
     89, 118, 138, 130,
     151,  28, 61, 93,
     203,   1, 14, 75,
-    245,   1,  4, 47,
-    255,   1,  1,  1
+    235,   1,  4, 47,
+    240,   0,  0,  0,
+    255,   0,  0,  0
   };
 
   // Gradient palette "sky_03_gp", originally from
@@ -556,14 +549,6 @@ void loop() {
     255,   0,  0,  0
   };
 
-//  DEFINE_GRADIENT_PALETTE( sky_03_gp ) {
-//    0, 255, 255, 255,
-//    10, 255, 239, 130,
-//    76, 120, 118, 59,
-//    151,   5, 38, 54,
-//    250,   0,  9, 18,
-//    255,   1,  1,  1
-//  };
 
   // Gradient palette "sky_04_gp", originally from
   // http://soliton.vm.bytemark.co.uk/pub/cpt-city/rafi/tn/sky-04.png.index.html
@@ -575,7 +560,8 @@ void loop() {
     10, 255, 189,  3,
     76, 110, 19,  1,
     151,  27,  5,  1,
-    255,   1,  1,  1
+    240,   0,  0,  0,
+    255,   0,  0,  0
   };
 
   // Gradient palette "sky_05_gp", originally from
@@ -591,7 +577,8 @@ void loop() {
     101,  46, 114, 226,
     127,   6, 40, 127,
     191,   1,  3, 17,
-    250,   1,  1,  4,
+    235,   1,  1,  4,
+    240,   0,  0,  0,
     255,   0,  0,  0
   };
 
@@ -605,7 +592,8 @@ void loop() {
     10, 252, 97,  2,
     89,  17, 17,  4,
     178,   7,  8,  2,
-    255,   1,  1,  1
+    240,   0,  0,  0,
+    255,   0,  0,  0
   };
 
 
@@ -620,7 +608,8 @@ void loop() {
     38, 217, 117, 52,
     89, 123, 43, 22,
     165,  26,  7,  4,
-    255,   1,  1,  1
+    240,   0,  0,  0,
+    255,   0,  0,  0
   };
 
   // Gradient palette "sky_11_gp", originally from
@@ -633,7 +622,8 @@ void loop() {
     10, 210, 80,  3,
     38, 255, 215, 106,
     165,  64, 114, 176,
-    250,   5, 12, 38,
+    235,   5, 12, 38,
+    240,   0,  0,  0,
     255,   0,  0,  0
   };
 
@@ -650,7 +640,8 @@ void loop() {
     10, 206, 78, 44,
     68, 167, 57, 155,
     165,  12,  1, 37,
-    250,   1,  1,  9,
+    235,   1,  1,  9,
+    240,   0,  0,  0,
     255,   0,  0,  0
   };
 
@@ -665,7 +656,8 @@ void loop() {
     40, 227, 141, 72,
     87, 125, 149, 135,
     178,   0, 31, 52,
-    250,   1, 10, 22,
+    235,   1, 10, 22,
+    240,   0,  0,  0,
     255,   0,  0,  0
   };
 
@@ -681,7 +673,8 @@ void loop() {
     10, 224, 244, 255,
     87,  83, 203, 255,
     178,  48, 156, 233,
-    245,   3, 59, 162,
+    230,   3, 59, 162,
+    240,   0,  0,  0,
     255,   0,  0,  0
   };
 
@@ -696,7 +689,8 @@ void loop() {
     40,  90,  5, 12,
     87,  74, 24, 22,
     178,  51, 42, 73,
-    235,  27, 35, 108,
+    225,  27, 35, 108,
+    240,   0,  0,  0,
     255,   0,  0,  0
   };
 
@@ -711,7 +705,8 @@ void loop() {
     51, 115, 58, 13,
     89, 109, 55, 14,
     178,  55, 31, 16,
-    250,  13, 12, 12,
+    235,  13, 12, 12,
+    240,   0,  0,  0,
     255,   0,  0,  0
   };
 
@@ -726,7 +721,8 @@ void loop() {
     51, 227, 107, 79,
     87, 155, 55, 54,
     178,  22, 28, 36,
-    245,   5, 19, 31,
+    230,   5, 19, 31,
+    240,   0,  0,  0,
     255,   0,  0,  0
   };
 
@@ -741,7 +737,8 @@ void loop() {
     51, 171, 60, 17,
     87,  21, 39, 24,
     178,   1,  8,  6,
-    255,   0,  1,  1
+    240,   0,  0,  0,
+    255,   0,  0,  0
   };
 
   // Gradient palette "sky_39_gp", originally from
@@ -754,7 +751,8 @@ void loop() {
     10, 247, 255, 85,
     36, 255, 248,  0,
     140,  77,  6,  1,
-    250,  16,  1,  0,
+    235,  16,  1,  0,
+    240,   0,  0,  0,
     255,   0,  0,  0
   };
 
@@ -772,7 +770,8 @@ void loop() {
     70, 232,  1, 66,
     76, 252,  1, 69,
     108, 123,  2, 51,
-    240,  46,  9, 35,
+    225,  46,  9, 35,
+    240,   0,  0,  0,
     255,   0,  0,  0
   };
 
@@ -791,7 +790,8 @@ void loop() {
     97, 220, 156, 27,
     124, 203, 193, 61,
     178,  33, 53, 56,
-    245,   0,  1, 52,
+    230,   0,  1, 52,
+    240,   0,  0,  0,
     255,   0,  0,  0
   };
 
@@ -812,7 +812,8 @@ void loop() {
     136, 161, 73, 54,
     172, 165, 33, 18,
     211,  67, 17, 23,
-    245,  16,  7, 30,
+    230,  16,  7, 30,
+    240,   0,  0,  0,
     255,   0,  0,  0
   };
 
@@ -834,7 +835,8 @@ void loop() {
     137, 249, 65,  6,
     163, 255, 100,  4,
     207, 100, 44,  3,
-    245,  22, 11,  3,
+    230,  22, 11,  3,
+    240,   0,  0,  0,
     255,   0,  0,  0
   };
 
@@ -852,7 +854,8 @@ void loop() {
     85, 167, 22, 18,
     135, 100,  0, 103,
     198,  16,  0, 130,
-    240,   0,  0, 160,
+    225,   0,  0, 160,
+    240,   0,  0,  0,
     255,   0,  0,  0
   };
 
@@ -876,7 +879,8 @@ void loop() {
     135, 249, 70,  8,
     152, 255, 86,  8,
     196, 192, 28, 12,
-    240, 139,  2, 17,
+    225, 139,  2, 17,
+    240,   0,  0,  0,
     255,   0,  0,  0
   };
 
