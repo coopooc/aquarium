@@ -122,12 +122,12 @@ void setup() {
 
 
 
-  Alarm.alarmRepeat(21, 46, 0, startsunrise);
-  Alarm.alarmRepeat(8, 21, 0, startpurplelight);
-  Alarm.alarmRepeat(14, 34, 0, startdaylight);
-  Alarm.alarmRepeat(21, 11, 0, startsunset);
-  Alarm.alarmRepeat(21, 24, 0, startmoonglow);
-  Alarm.alarmRepeat(22, 5, 0, startlightsoff);
+  Alarm.alarmRepeat(6, 20, 0, startsunrise);
+  Alarm.alarmRepeat(7, 30, 0, startpurplelight);
+  Alarm.alarmRepeat(15, 30, 0, startdaylight);
+  Alarm.alarmRepeat(20, 00, 0, startsunset);
+  Alarm.alarmRepeat(20, 30, 0, startmoonglow);
+  Alarm.alarmRepeat(21, 50, 0, startlightsoff);
 
 
   // Forward declarations of an array of cpt-city gradient palettes, and
@@ -408,7 +408,7 @@ void loop() {
   }
 
   void daylight() {
-    fill_solid(leds, NUM_LEDS, CRGB(210, 210, 255));
+    fill_solid(leds, NUM_LEDS, CRGB(200, 200, 255));
   }
 
   void purplelight() {
