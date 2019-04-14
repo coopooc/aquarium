@@ -28,6 +28,18 @@ const char pass[] = "asdf";       // your network password
 #define COLOR_ORDER GRB
 //#include "GradientPalettes.h"
 
+uint8_t frequency = 20;                                       // controls the interval between strikes
+#define MAX_FLASHES 8                                         //the upper limit of flashes per strike
+unsigned int toflash=4; //Numer of times to flash
+unsigned int dimmer = 1;
+uint8_t ledstart;                                             // Starting location of a flash
+uint8_t ledlen;
+int flashCounter = 0;
+int lightningCounter = 0;
+int stormstrength = 255;
+
+
+
 // NTP Servers:
 static const char ntpServerName[] = "us.pool.ntp.org";
 //static const char ntpServerName[] = "time.nist.gov";
@@ -122,12 +134,14 @@ void setup() {
 
 
 
-  Alarm.alarmRepeat(6, 20, 0, startsunrise);
-  Alarm.alarmRepeat(7, 30, 0, startpurplelight);
-  Alarm.alarmRepeat(15, 30, 0, startdaylight);
+  Alarm.alarmRepeat(6, 25, 0, startsunrise);
+  Alarm.alarmRepeat(12, 30, 0, startpurplelight);
+  Alarm.alarmRepeat(16, 30, 0, startdaylight);
   Alarm.alarmRepeat(20, 00, 0, startsunset);
   Alarm.alarmRepeat(20, 30, 0, startmoonglow);
   Alarm.alarmRepeat(21, 50, 0, startlightsoff);
+
+  Alarm.timerOnce(random(172800,345600), randomTimer);  // trigger after random number of seconds
 
 
   // Forward declarations of an array of cpt-city gradient palettes, and
@@ -157,6 +171,7 @@ boolean daylightGo = false;
 boolean purplelightGo = false;
 boolean moonglowGo = false;
 boolean lightsoffGo = false;
+boolean lightningGo = false;
 
 
 // Forward declarations of an array of cpt-city gradient palettes, and
@@ -205,6 +220,9 @@ void loop() {
       moonglow();
       FastLED.show();
     }
+    else if (lightningGo == true) {
+      lightning();
+    }
     else if (lightsoffGo == true) {
       lightsoff();
       FastLED.show();
@@ -227,6 +245,8 @@ void loop() {
     Serial.println(moonglowGo);
     Serial.println("LightsOffGo");
     Serial.println(lightsoffGo);
+    Serial.println("LightningGo");
+    Serial.println(lightningGo);
 
     
     Serial.println("MiddleSunsetColor");
@@ -245,6 +265,7 @@ void loop() {
     purplelightGo = false;
     moonglowGo = false;
     lightsoffGo = false;
+    lightningGo = false;
 
     gCurrentPaletteNumber = addmod8( gCurrentPaletteNumber, 1, gGradientPaletteCount);
     //  gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
@@ -262,6 +283,7 @@ void loop() {
     purplelightGo = false;
     moonglowGo = false;
     lightsoffGo = false;
+    lightningGo = false;
 
     gCurrentPaletteNumber = addmod8( gCurrentPaletteNumber, 1, gGradientPaletteCount);
     gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
@@ -281,6 +303,7 @@ void loop() {
     purplelightGo = false;
     moonglowGo = false;
     lightsoffGo = false;
+    lightningGo = false;
   }
 
   void startpurplelight() {
@@ -290,6 +313,7 @@ void loop() {
     daylightGo = false;
     moonglowGo = false;
     lightsoffGo = false;
+    lightningGo = false;
   }
 
   void startmoonglow() {
@@ -299,6 +323,7 @@ void loop() {
     daylightGo = false;
     purplelightGo = false;
     lightsoffGo = false;
+    lightningGo = false;
   }
 
   void startlightsoff() {
@@ -308,12 +333,77 @@ void loop() {
     daylightGo = false;
     purplelightGo = false;
     moonglowGo = false;
+    lightningGo = false;
   }
+
+  void startlightning() {
+    lightsoffGo = false;
+    sunriseGo = false;
+    sunsetGo = false;
+    daylightGo = false;
+    purplelightGo = false;
+    moonglowGo = false;
+    lightningGo = true;
+  }  
 
   void testalarm() {
     FastLED.showColor(CRGB::Blue);
     Serial.println("Testing testing 123...");
   }
+
+void randomTimer(){
+  int period = random(172800,345600);             // get a new random period 
+  startlightning();
+  Alarm.timerOnce(period, randomTimer);  // trigger for another random period 
+}
+
+void lightning() {
+  //Based on https://github.com/atuline/FastLED-Demos/blob/master/lightnings/lightnings.ino but rewritten to be less blocking for buttons
+  if (flashCounter == 0 || flashCounter > toflash) {
+    //if is 0 (first loop) or more than planned, recalculate next series
+    // Serial.println("Calc flashes!");
+    fadeToBlackBy( leds, NUM_LEDS, 255); //Turn to black
+    ledstart = random8(NUM_LEDS);                               // Determine starting location of flash
+    ledlen = random8(NUM_LEDS-ledstart);                        // Determine length of flash (not to go beyond NUM_LEDS-1)
+    toflash=random8(3,MAX_FLASHES);     //Amount of flashes
+    flashCounter=0;
+    //    Serial.print(ledstart);
+    //    Serial.println("-ledstart:");
+    //    Serial.print(ledlen);
+    //    Serial.println("-ledlen"); 
+  }
+
+  flashCounter++;
+  if(flashCounter == 0) {
+    dimmer = 5;                         // the brightness of the leader is scaled down by a factor of 5
+  } else {
+    dimmer = random8(1,3);                               // return strokes are brighter than the leader
+  }
+
+  fill_solid(leds+ledstart,ledlen,CHSV(255, 0, stormstrength/dimmer));
+  FastLED.show();                       // Show a section of LED's
+  Alarm.delay(random8(4,10));                                     // each flash only lasts 4-10 milliseconds
+  fill_solid(leds+ledstart,ledlen,CHSV(255,0,0));           // Clear the section of LED's
+  FastLED.show();
+  if (flashCounter == 0) {
+    Alarm.delay (150);                       // longer delay until next flash after the leader
+  }
+
+//  Alarm.delay(50+random8(100));                                   // shorter delay between strokes  
+    lightningCounter++;
+  if(lightningCounter > 500 && stormstrength > 0) {
+    stormstrength--;                         // the brightness of the leader is scaled down by a factor of 5
+  }
+
+  Alarm.delay(random8(frequency)*100); //Not wanted in my version as I want quicker flashes  
+
+        Serial.print(lightningCounter);
+        Serial.println("-lightning counter");
+        Serial.print(stormstrength);
+        Serial.println("-Storm Strength");
+        
+} // lightning
+  
 
   void sunrise( CRGB * ledarray, uint16_t numleds ) {
 
@@ -408,7 +498,7 @@ void loop() {
   }
 
   void daylight() {
-    fill_solid(leds, NUM_LEDS, CRGB(200, 200, 255));
+    fill_solid(leds, NUM_LEDS, CRGB(190, 190, 255));
   }
 
   void purplelight() {
@@ -418,7 +508,7 @@ void loop() {
   void moonglow() {
     fadeToBlackBy(leds, 36, 1 );
     fadeToBlackBy(leds + 39, 33, 1 );
-    fill_solid(leds + 36, 3, CRGB(102, 0, 102));
+    fill_solid(leds + 36, 3, CRGB(85, 0, 85));
   }
 
   void lightsoff() {
@@ -523,7 +613,7 @@ void loop() {
 
 
     DEFINE_GRADIENT_PALETTE( sky_02_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     10, 215, 197, 49,
     38, 171, 146, 82,
     89, 118, 138, 130,
@@ -540,7 +630,7 @@ void loop() {
   // Size: 16 bytes of program space.
 
    DEFINE_GRADIENT_PALETTE( sky_03_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     10, 255, 239, 130,
     56, 120, 118, 59,
     75,   5, 38, 54,
@@ -556,7 +646,7 @@ void loop() {
   // Size: 16 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_04_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     10, 255, 189,  3,
     76, 110, 19,  1,
     151,  27,  5,  1,
@@ -570,7 +660,7 @@ void loop() {
   // Size: 28 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_05_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     10, 252, 61,  2,
     25, 255, 146,  4,
     63, 224, 255, 255,
@@ -588,7 +678,7 @@ void loop() {
   // Size: 16 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_09_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     10, 252, 97,  2,
     89,  17, 17,  4,
     178,   7,  8,  2,
@@ -603,7 +693,7 @@ void loop() {
   // Size: 20 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_10_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     10, 247, 235,  9,
     38, 217, 117, 52,
     89, 123, 43, 22,
@@ -618,7 +708,7 @@ void loop() {
   // Size: 16 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_11_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     10, 210, 80,  3,
     38, 255, 215, 106,
     165,  64, 114, 176,
@@ -636,7 +726,7 @@ void loop() {
   // This one starts in the pinks and goes through violets to black
 
   DEFINE_GRADIENT_PALETTE( sky_12_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     10, 206, 78, 44,
     68, 167, 57, 155,
     165,  12,  1, 37,
@@ -651,7 +741,7 @@ void loop() {
   // Size: 20 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_21_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     10, 255, 164, 49,
     40, 227, 141, 72,
     87, 125, 149, 135,
@@ -669,7 +759,7 @@ void loop() {
   // A very blue one ideal for a cool sunrise ending in white.
 
   DEFINE_GRADIENT_PALETTE( sky_22_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     10, 224, 244, 255,
     87,  83, 203, 255,
     178,  48, 156, 233,
@@ -684,7 +774,7 @@ void loop() {
   // Size: 20 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_25_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     30,  10,  4, 25,
     40,  90,  5, 12,
     87,  74, 24, 22,
@@ -700,7 +790,7 @@ void loop() {
   // Size: 20 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_26_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     10, 247, 124, 37,
     51, 115, 58, 13,
     89, 109, 55, 14,
@@ -716,7 +806,7 @@ void loop() {
   // Size: 20 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_33_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     10, 237, 229, 140,
     51, 227, 107, 79,
     87, 155, 55, 54,
@@ -732,7 +822,7 @@ void loop() {
   // Size: 20 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_34_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     20, 199, 142, 11,
     51, 171, 60, 17,
     87,  21, 39, 24,
@@ -747,7 +837,7 @@ void loop() {
   // Size: 16 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_39_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     10, 247, 255, 85,
     36, 255, 248,  0,
     140,  77,  6,  1,
@@ -763,7 +853,7 @@ void loop() {
   // Size: 28 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( Magenta_Evening_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     25,  71, 27, 39,
     31, 130, 11, 51,
     63, 213,  2, 64,
@@ -782,7 +872,7 @@ void loop() {
   // Size: 32 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( Another_Sunset_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     24, 110, 49, 11,
     29,  55, 34, 10,
     68,  22, 22,  9,
@@ -801,7 +891,7 @@ void loop() {
   // Size: 44 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( Night_Stormy_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     40,  10,  2, 26,
     57,  55, 39, 62,
     93, 155, 131, 117,
@@ -824,7 +914,7 @@ void loop() {
   // Size: 44 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( SummerSunset_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     20, 163, 23,  1,
     33, 206, 34,  5,
     70, 255, 48, 17,
@@ -847,7 +937,7 @@ void loop() {
   // Size: 28 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( Sunset_Real_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     15, 120,  0,  0,
     22, 179, 22,  0,
     51, 255, 104,  0,
@@ -866,7 +956,7 @@ void loop() {
   // Size: 52 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( Sunset_Wow_gp ) {
-    0, 255, 255, 255,
+    0, 200, 200, 255,
     15, 109,  4, 24,
     25, 173, 25, 15,
     51, 255, 67,  8,
