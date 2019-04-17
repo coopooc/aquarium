@@ -22,6 +22,9 @@ const char pass[] = "asdf";       // your network password
 #define FASTLED_ESP8266_DMA
 #include <FastLED.h>
 #define DATA_PIN 3
+#define SWITCH_PIN1 5
+#define SWITCH_PIN2 4
+#define SWITCH_PIN3 0
 #define NUM_LEDS 72
 #define BRIGHTNESS 255
 #define LED_TYPE WS2811
@@ -85,6 +88,9 @@ void setup() {
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS);
   FastLED.setBrightness(BRIGHTNESS);
 
+pinMode(SWITCH_PIN1, INPUT_PULLUP);
+pinMode(SWITCH_PIN2, INPUT_PULLUP);
+pinMode(SWITCH_PIN3, INPUT_PULLUP);
 
   //  WiFi.mode(WIFI_STA);
   //  WiFi.begin(YOUR_WIFI_SSID, YOUR_WIFI_PASSWD);
@@ -135,13 +141,14 @@ void setup() {
 
 
   Alarm.alarmRepeat(6, 25, 0, startsunrise);
+  Alarm.alarmRepeat(8, 00, 0, startlightsoff);
   Alarm.alarmRepeat(12, 30, 0, startpurplelight);
   Alarm.alarmRepeat(16, 30, 0, startdaylight);
   Alarm.alarmRepeat(20, 00, 0, startsunset);
   Alarm.alarmRepeat(20, 30, 0, startmoonglow);
   Alarm.alarmRepeat(21, 50, 0, startlightsoff);
 
-  Alarm.timerOnce(random(172800,345600), randomTimer);  // trigger after random number of seconds
+  Alarm.timerOnce(random(86400,172800), randomTimer);  // trigger after random number of seconds
 
 
   // Forward declarations of an array of cpt-city gradient palettes, and
@@ -199,6 +206,44 @@ void loop() {
 //      digitalClockDisplay();
 //    }
 
+  bool button1State = digitalRead(SWITCH_PIN3);// read the state of the pushbutton value:
+  if (button1State == LOW) { 
+      lightning();
+    sunriseGo = false;
+    sunsetGo = false;
+    daylightGo = false;
+    purplelightGo = false;
+    moonglowGo = false;
+    lightsoffGo = false;
+    lightningGo = false;
+  }
+
+  bool button2State = digitalRead(SWITCH_PIN2);// read the state of the pushbutton value:
+  if (button2State == LOW) { 
+      sunset(leds, NUM_LEDS);
+      FastLED.show();
+    sunriseGo = false;
+    sunsetGo = false;
+    daylightGo = false;
+    purplelightGo = false;
+    moonglowGo = false;
+    lightsoffGo = false;
+    lightningGo = false;
+  }
+
+  bool button5State = digitalRead(SWITCH_PIN1);// read the state of the pushbutton value:
+  if (button5State == LOW) { 
+    daylight();
+      FastLED.show(); 
+    
+    sunriseGo = false;
+    sunsetGo = false;
+    daylightGo = false;
+    purplelightGo = false;
+    moonglowGo = false;
+    lightsoffGo = false;
+    lightningGo = false;
+  }    
 
     if (sunriseGo == true) {
       sunrise(leds, NUM_LEDS);
@@ -352,7 +397,7 @@ void loop() {
   }
 
 void randomTimer(){
-  int period = random(172800,345600);             // get a new random period 
+  int period = random(86400,172800);             // get a new random period 
   startlightning();
   Alarm.timerOnce(period, randomTimer);  // trigger for another random period 
 }
@@ -613,7 +658,7 @@ void lightning() {
 
 
     DEFINE_GRADIENT_PALETTE( sky_02_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     10, 215, 197, 49,
     38, 171, 146, 82,
     89, 118, 138, 130,
@@ -630,7 +675,7 @@ void lightning() {
   // Size: 16 bytes of program space.
 
    DEFINE_GRADIENT_PALETTE( sky_03_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     10, 255, 239, 130,
     56, 120, 118, 59,
     75,   5, 38, 54,
@@ -646,7 +691,7 @@ void lightning() {
   // Size: 16 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_04_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     10, 255, 189,  3,
     76, 110, 19,  1,
     151,  27,  5,  1,
@@ -660,7 +705,7 @@ void lightning() {
   // Size: 28 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_05_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     10, 252, 61,  2,
     25, 255, 146,  4,
     63, 224, 255, 255,
@@ -678,7 +723,7 @@ void lightning() {
   // Size: 16 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_09_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     10, 252, 97,  2,
     89,  17, 17,  4,
     178,   7,  8,  2,
@@ -693,7 +738,7 @@ void lightning() {
   // Size: 20 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_10_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     10, 247, 235,  9,
     38, 217, 117, 52,
     89, 123, 43, 22,
@@ -708,7 +753,7 @@ void lightning() {
   // Size: 16 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_11_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     10, 210, 80,  3,
     38, 255, 215, 106,
     165,  64, 114, 176,
@@ -726,7 +771,7 @@ void lightning() {
   // This one starts in the pinks and goes through violets to black
 
   DEFINE_GRADIENT_PALETTE( sky_12_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     10, 206, 78, 44,
     68, 167, 57, 155,
     165,  12,  1, 37,
@@ -741,7 +786,7 @@ void lightning() {
   // Size: 20 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_21_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     10, 255, 164, 49,
     40, 227, 141, 72,
     87, 125, 149, 135,
@@ -759,7 +804,7 @@ void lightning() {
   // A very blue one ideal for a cool sunrise ending in white.
 
   DEFINE_GRADIENT_PALETTE( sky_22_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     10, 224, 244, 255,
     87,  83, 203, 255,
     178,  48, 156, 233,
@@ -774,7 +819,7 @@ void lightning() {
   // Size: 20 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_25_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     30,  10,  4, 25,
     40,  90,  5, 12,
     87,  74, 24, 22,
@@ -790,7 +835,7 @@ void lightning() {
   // Size: 20 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_26_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     10, 247, 124, 37,
     51, 115, 58, 13,
     89, 109, 55, 14,
@@ -806,7 +851,7 @@ void lightning() {
   // Size: 20 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_33_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     10, 237, 229, 140,
     51, 227, 107, 79,
     87, 155, 55, 54,
@@ -822,7 +867,7 @@ void lightning() {
   // Size: 20 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_34_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     20, 199, 142, 11,
     51, 171, 60, 17,
     87,  21, 39, 24,
@@ -837,7 +882,7 @@ void lightning() {
   // Size: 16 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( sky_39_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     10, 247, 255, 85,
     36, 255, 248,  0,
     140,  77,  6,  1,
@@ -853,7 +898,7 @@ void lightning() {
   // Size: 28 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( Magenta_Evening_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     25,  71, 27, 39,
     31, 130, 11, 51,
     63, 213,  2, 64,
@@ -872,7 +917,7 @@ void lightning() {
   // Size: 32 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( Another_Sunset_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     24, 110, 49, 11,
     29,  55, 34, 10,
     68,  22, 22,  9,
@@ -891,7 +936,7 @@ void lightning() {
   // Size: 44 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( Night_Stormy_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     40,  10,  2, 26,
     57,  55, 39, 62,
     93, 155, 131, 117,
@@ -914,7 +959,7 @@ void lightning() {
   // Size: 44 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( SummerSunset_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     20, 163, 23,  1,
     33, 206, 34,  5,
     70, 255, 48, 17,
@@ -937,7 +982,7 @@ void lightning() {
   // Size: 28 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( Sunset_Real_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     15, 120,  0,  0,
     22, 179, 22,  0,
     51, 255, 104,  0,
@@ -956,7 +1001,7 @@ void lightning() {
   // Size: 52 bytes of program space.
 
   DEFINE_GRADIENT_PALETTE( Sunset_Wow_gp ) {
-    0, 200, 200, 255,
+    0, 190, 190, 255,
     15, 109,  4, 24,
     25, 173, 25, 15,
     51, 255, 67,  8,
